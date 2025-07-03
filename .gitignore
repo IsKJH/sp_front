@@ -100,8 +100,8 @@ temp/
 # Module Federation related
 **/dist/
 **/@mf-types/
-**/remoteEntry.js
-**/remoteEntry.js.map
+# **/remoteEntry.js  # 팀원들이 실행할 수 있도록 주석 처리
+# **/remoteEntry.js.map
 
 # Lock files (optional - uncomment if you want to ignore)
 # package-lock.json
