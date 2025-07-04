@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "packages": [
     "sp-container",
-    "sp-navigation-bar"
+    "sp-navigation-bar",
+    "sp-auth"
   ],
   "hoist": true
 }

@@ -1,8 +1,8 @@
 export const mfConfig = {
-    name: "sp_container",
-    remotes: {
-        spNavigationBar: "spNavigationBar@http://localhost:3000/remoteEntry.js",
-        spAuth: "spAuth@http://localhost:3001/remoteEntry.js",
+    name: "spAuth",
+    filename: "remoteEntry.js",
+    exposes: {
+        "./App": "./src/App",
     },
     shared: {
         react: {singleton: true, requiredVersion: "^18.2.0"},

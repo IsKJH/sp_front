@@ -4,7 +4,8 @@
   "workspaces": [
     "packages/*",
     "sp-container",
-    "sp-navigation-bar"
+    "sp-navigation-bar",
+    "sp-auth"
   ],
   "scripts": {
     "bootstrap": "lerna bootstrap",
