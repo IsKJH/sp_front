@@ -1,13 +1,13 @@
-import React from "react";
+import React, {useEffect} from "react";
 import KakaoIcon from "../assets/kakao_logo.png";
 import GoogleIcon from "../assets/google_logo.png";
 import NaverIcon from "../assets/naver_logo.png";
-import GithubIcon from "../assets/github_logo.png";
-import MetaIcon from "../assets/meta_logo.png";
 import env from "../env.ts";
 import {useNavigate} from "react-router-dom";
+import {apiClient, useUserStore} from 'shared-utils';
 
-type Provider = "kakao" | "google" | "naver" | "github" | "meta";
+
+type Provider = "kakao" | "google" | "naver";
 
 interface SocialLoginButtonProps {
     provider: Provider;
@@ -42,28 +42,14 @@ const providerConfig: Record<Provider, ProviderConfig> = {
         bgColor: "bg-green-500 hover:bg-green-600 active:bg-green-700",
         textColor: "text-white",
         border: "border border-green-600",
-    },
-    github: {
-        src: GithubIcon,
-        label: "GitHub 로그인",
-        bgColor: "bg-white hover:bg-gray-50 active:bg-gray-100",
-        textColor: "text-gray-900",
-        border: "border border-gray-300",
-    },
-    meta: {
-        src: MetaIcon,
-        label: "Facebook 로그인",
-        bgColor: "bg-blue-600 hover:bg-blue-700 active:bg-blue-800",
-        textColor: "text-white",
-        border: "border border-blue-700",
-    },
+    }
 };
 
 
 const SocialLoginButton: React.FC<SocialLoginButtonProps> = ({provider}) => {
     const {src, label, bgColor, textColor, border} = providerConfig[provider];
     const navigate = useNavigate();
-
+    const {setToken, setUserData} = useUserStore();
     const getAuthUrl = (provider: Provider): string | undefined => {
         switch (provider) {
             case "kakao":
@@ -72,10 +58,6 @@ const SocialLoginButton: React.FC<SocialLoginButtonProps> = ({provider}) => {
                 return env.api.GOOGLE_AUTH_URL;
             case "naver":
                 return env.api.NAVER_AUTH_URL;
-            case "github":
-                return env.api.GITHUB_AUTH_URL;
-            case "meta":
-                return env.api.META_AUTH_URL;
         }
     };
 
@@ -87,7 +69,7 @@ const SocialLoginButton: React.FC<SocialLoginButtonProps> = ({provider}) => {
             return;
         }
         const allowedOrigins = env.origins[provider];
-        const receiveMessage = (event: MessageEvent) => {
+        const receiveMessage = async (event: MessageEvent) => { // async 추가
             if (!allowedOrigins.some(origin => event.origin.startsWith(origin))) {
                 console.warn("허용되지 않은 origin:", event.origin);
                 return;
@@ -97,8 +79,25 @@ const SocialLoginButton: React.FC<SocialLoginButtonProps> = ({provider}) => {
             if (!accessToken) return;
 
             localStorage.setItem("userToken", accessToken);
-            window.dispatchEvent(new Event("user-token-changed"));
+            setToken(accessToken);
 
+            // 사용자 데이터 가져오기
+            try {
+                const userData = await fetchUserData();
+                console.log('Fetched userData:', userData);
+                setUserData(userData);
+                console.log('setUserData called with:', userData);
+                
+                // 다른 마이크로프론트엔드로 데이터 전송
+                window.postMessage({
+                    type: 'USER_LOGIN',
+                    payload: { userData, token: accessToken }
+                }, '*');
+            } catch (error) {
+                console.error('사용자 정보 가져오기 실패:', error);
+            }
+
+            window.dispatchEvent(new Event("user-token-changed"));
             window.removeEventListener("message", receiveMessage);
 
             try {
@@ -111,6 +110,12 @@ const SocialLoginButton: React.FC<SocialLoginButtonProps> = ({provider}) => {
 
         window.addEventListener("message", receiveMessage);
     }
+
+    const fetchUserData = async () => {
+        const userData = await apiClient.get('/api/user/profile');
+        return userData;
+    };
+
     return (
         <button
             type="button"

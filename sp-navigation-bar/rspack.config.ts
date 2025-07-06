@@ -1,7 +1,7 @@
 import * as path from "node:path";
 import { defineConfig } from "@rspack/cli";
 import { rspack } from "@rspack/core";
-import * as RefreshPlugin from "@rspack/plugin-react-refresh";
+import ReactRefreshRspackPlugin from "@rspack/plugin-react-refresh";
 import { ModuleFederationPlugin } from "@module-federation/enhanced/rspack";
 
 
@@ -83,7 +83,7 @@ export default defineConfig({
       template: "./index.html",
     }),
     new ModuleFederationPlugin(mfConfig),
-    isDev ? new RefreshPlugin() : null,
+    isDev ? new ReactRefreshRspackPlugin() : null,
   ].filter(Boolean),
   optimization: {
     minimizer: [

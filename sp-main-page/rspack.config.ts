@@ -1,6 +1,6 @@
 import * as path from "node:path";
 import { defineConfig } from "@rspack/cli";
-import {DefinePlugin, rspack} from "@rspack/core";
+import { rspack } from "@rspack/core";
 import ReactRefreshRspackPlugin from "@rspack/plugin-react-refresh";
 import { ModuleFederationPlugin } from "@module-federation/enhanced/rspack";
 
@@ -22,15 +22,15 @@ export default defineConfig({
   },
 
   devServer: {
-    port: 3001,
+    port: 3002,
     historyApiFallback: true,
     watchFiles: [path.resolve(__dirname, "src")],
   },
   output: {
     // You need to set a unique value that is not equal to other applications
-    uniqueName: "sp_auth",
+    uniqueName: "sp_main_page",
     // publicPath must be configured if using manifest
-    publicPath: "http://localhost:3001/",
+    publicPath: "http://localhost:3002/",
   },
 
   experiments: {
@@ -81,18 +81,6 @@ export default defineConfig({
   plugins: [
     new rspack.HtmlRspackPlugin({
       template: "./index.html",
-    }), new DefinePlugin({
-      "process.env.REACT_KAKAO_AUTH_URL": JSON.stringify(process.env.REACT_KAKAO_AUTH_URL),
-      "process.env.REACT_KAKAO_ORIGINS": JSON.stringify(process.env.REACT_KAKAO_ORIGINS),
-      "process.env.REACT_GOOGLE_AUTH_URL": JSON.stringify(process.env.REACT_GOOGLE_AUTH_URL),
-      "process.env.REACT_GOOGLE_ORIGINS": JSON.stringify(process.env.REACT_GOOGLE_ORIGINS),
-      "process.env.REACT_NAVER_AUTH_URL": JSON.stringify(process.env.REACT_NAVER_AUTH_URL),
-      "process.env.REACT_NAVER_ORIGINS": JSON.stringify(process.env.REACT_NAVER_ORIGINS),
-      "process.env.REACT_GITHUB_AUTH_URL": JSON.stringify(process.env.REACT_GITHUB_AUTH_URL),
-      "process.env.REACT_GITHUB_ORIGINS": JSON.stringify(process.env.REACT_GITHUB_ORIGINS),
-      "process.env.REACT_META_AUTH_URL": JSON.stringify(process.env.REACT_META_AUTH_URL),
-      "process.env.REACT_META_ORIGINS": JSON.stringify(process.env.REACT_META_ORIGINS),
-      "process.env.NODE_ENV": JSON.stringify(process.env.NODE_ENV),
     }),
     new ModuleFederationPlugin(mfConfig),
     isDev ? new ReactRefreshRspackPlugin() : null,
@@ -101,7 +89,7 @@ export default defineConfig({
     minimizer: [
       new rspack.SwcJsMinimizerRspackPlugin(),
       new rspack.LightningCssMinimizerRspackPlugin({
-        minimizerOptions: {targets},
+        minimizerOptions: { targets },
       }),
     ],
   },

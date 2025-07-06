@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
 import LogoImage from "../assets/github_logo.png";
@@ -6,12 +6,41 @@ import {motion, AnimatePresence} from "framer-motion";
 import "../index.css";
 import LoginIcon from '@mui/icons-material/Login';
 import {useNavigate} from "react-router-dom";
+import {useUserStore} from 'shared-utils';
 
 const Navigation = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [showTooltip, setShowTooltip] = useState(false);
     const navigate = useNavigate();
+    const {userData, isLoggedIn, logout, token, initializeAuth, setUserData} = useUserStore();
     let menus = ["메뉴1", "메뉴2", "메뉴3", "메뉴4", "메뉴5"];
+
+    useEffect(() => {
+        initializeAuth();
+        
+        // 다른 마이크로프론트엔드로부터 로그인 정보 받기
+        const handleMessage = (event: MessageEvent) => {
+            if (event.data.type === 'USER_LOGIN') {
+                const { userData, token } = event.data.payload;
+                console.log('Navigation에서 받은 userData:', userData);
+                setUserData(userData);
+                // 토큰도 업데이트
+                localStorage.setItem("userToken", token);
+            }
+        };
+        
+        window.addEventListener('message', handleMessage);
+        
+        return () => {
+            window.removeEventListener('message', handleMessage);
+        };
+    }, []);
+
+    console.log('로그인 상태:', {
+        isLoggedIn,
+        token: !!token,
+        userData
+    });
 
     return (
         <div className="relative">

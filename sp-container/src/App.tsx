@@ -4,6 +4,7 @@ import "./index.css";
 
 const SpNavigationBar = lazy(() => import("spNavigationBar/App"));
 const SpAuth = lazy(() => import("spAuth/App"));
+const SpMainPage = lazy(() => import("spMainPage/App"));
 
 const App = () => {
     return (
@@ -12,8 +13,8 @@ const App = () => {
                 <Suspense fallback={<div>Loading Navigation Bar...</div>}>
                     <SpNavigationBar/>
                     <div className="flex h-auto mx-auto justify-center items-center">
-                    <Routes>
-                            <Route path="/" element={<div>Home Page</div>}/>
+                        <Routes>
+                            <Route path="/" element={<SpMainPage/>}/>
                             <Route path="/login" element={<SpAuth/>}/>
                         </Routes>
                     </div>

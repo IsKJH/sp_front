@@ -4,15 +4,11 @@ interface Env {
         KAKAO_AUTH_URL: string | undefined;
         GOOGLE_AUTH_URL: string | undefined;
         NAVER_AUTH_URL: string | undefined;
-        GITHUB_AUTH_URL: string | undefined;
-        META_AUTH_URL: string | undefined;
     };
     origins: {
         kakao: string[];
         google: string[];
         naver: string[];
-        github: string[];
-        meta: string[];
     };
 }
 
@@ -26,15 +22,11 @@ const env: Env = {
         KAKAO_AUTH_URL: process.env.REACT_KAKAO_AUTH_URL,
         GOOGLE_AUTH_URL: process.env.REACT_GOOGLE_AUTH_URL,
         NAVER_AUTH_URL: process.env.REACT_NAVER_AUTH_URL,
-        GITHUB_AUTH_URL: process.env.REACT_GITHUB_AUTH_URL,
-        META_AUTH_URL: process.env.REACT_META_AUTH_URL,
     },
     origins: {
         kakao: parseOrigins(process.env.REACT_KAKAO_ORIGINS),
         google: parseOrigins(process.env.REACT_GOOGLE_ORIGINS),
         naver: parseOrigins(process.env.REACT_NAVER_ORIGINS),
-        github: parseOrigins(process.env.REACT_GITHUB_ORIGINS),
-        meta: parseOrigins(process.env.REACT_META_ORIGINS),
     }
 };
 

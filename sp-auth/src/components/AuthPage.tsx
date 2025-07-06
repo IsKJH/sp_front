@@ -17,8 +17,6 @@ const AuthPage = () => {
                         <SocialLoginButton provider="kakao"/>
                         <SocialLoginButton provider="google"/>
                         <SocialLoginButton provider="naver"/>
-                        <SocialLoginButton provider="github"/>
-                        <SocialLoginButton provider="meta"/>
                     </div>
                 </div>
             </div>

@@ -5,7 +5,8 @@
     "packages/*",
     "sp-container",
     "sp-navigation-bar",
-    "sp-auth"
+    "sp-auth",
+    "sp-main-page"
   ],
   "scripts": {
     "bootstrap": "lerna bootstrap",

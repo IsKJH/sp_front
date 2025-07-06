@@ -1,6 +1,4 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
+import { bootstrapApp } from 'shared-utils';
 import App from "./App";
 
-const root = ReactDOM.createRoot(document.getElementById("app")!);
-root.render(<App />);
+bootstrapApp(App);

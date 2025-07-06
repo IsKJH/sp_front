@@ -3,6 +3,7 @@ export const mfConfig = {
     remotes: {
         spNavigationBar: "spNavigationBar@http://localhost:3000/remoteEntry.js",
         spAuth: "spAuth@http://localhost:3001/remoteEntry.js",
+        spMainPage: "spMainPage@http://localhost:3002/remoteEntry.js",
     },
     shared: {
         react: {singleton: true, requiredVersion: "^18.2.0"},
