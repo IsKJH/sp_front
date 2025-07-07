@@ -5,6 +5,8 @@ import LogoImage from "../assets/github_logo.png";
 import {motion, AnimatePresence} from "framer-motion";
 import "../index.css";
 import LoginIcon from '@mui/icons-material/Login';
+import LogoutIcon from '@mui/icons-material/Logout';
+import AccountCircleIcon from '@mui/icons-material/AccountCircleOutlined';
 import {useNavigate} from "react-router-dom";
 import {useUserStore} from 'shared-utils';
 
@@ -12,28 +14,11 @@ const Navigation = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [showTooltip, setShowTooltip] = useState(false);
     const navigate = useNavigate();
-    const {userData, isLoggedIn, logout, token, initializeAuth, setUserData} = useUserStore();
+    const {userData, isLoggedIn, logout, token, initializeAuth} = useUserStore();
     let menus = ["메뉴1", "메뉴2", "메뉴3", "메뉴4", "메뉴5"];
 
     useEffect(() => {
         initializeAuth();
-        
-        // 다른 마이크로프론트엔드로부터 로그인 정보 받기
-        const handleMessage = (event: MessageEvent) => {
-            if (event.data.type === 'USER_LOGIN') {
-                const { userData, token } = event.data.payload;
-                console.log('Navigation에서 받은 userData:', userData);
-                setUserData(userData);
-                // 토큰도 업데이트
-                localStorage.setItem("userToken", token);
-            }
-        };
-        
-        window.addEventListener('message', handleMessage);
-        
-        return () => {
-            window.removeEventListener('message', handleMessage);
-        };
     }, []);
 
     console.log('로그인 상태:', {
@@ -56,12 +41,13 @@ const Navigation = () => {
                         className="relative cursor-pointer"
                         onMouseEnter={() => setShowTooltip(true)}
                         onMouseLeave={() => setShowTooltip(false)}
-                        onClick={() => navigate("/login")}
+                        onClick={() => isLoggedIn ? logout() : navigate("/login")}
                     >
-                        <LoginIcon className="hover:text-blue-600 transition-colors"/>
+                        {isLoggedIn ? <LogoutIcon/> : <LoginIcon/>}
                         <AnimatePresence>
-                            {showTooltip && (
+                            {showTooltip && !isLoggedIn && (
                                 <motion.div
+                                    key="login-tooltip"
                                     initial={{opacity: 0, y: -10}}
                                     animate={{opacity: 1, y: 0}}
                                     exit={{opacity: 0, y: -10}}
@@ -69,6 +55,20 @@ const Navigation = () => {
                                     className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-sm px-2 py-1 rounded shadow-lg whitespace-nowrap"
                                 >
                                     로그인
+                                    <div
+                                        className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-full border-l-4 border-r-4 border-b-4 border-transparent border-b-gray-800"></div>
+                                </motion.div>
+                            )}
+                            {showTooltip && isLoggedIn && (
+                                <motion.div
+                                    key="logout-tooltip"
+                                    initial={{opacity: 0, y: -10}}
+                                    animate={{opacity: 1, y: 0}}
+                                    exit={{opacity: 0, y: -10}}
+                                    transition={{duration: 0.2}}
+                                    className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-sm px-2 py-1 rounded shadow-lg whitespace-nowrap"
+                                >
+                                    로그아웃
                                     <div
                                         className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-full border-l-4 border-r-4 border-b-4 border-transparent border-b-gray-800"></div>
                                 </motion.div>
@@ -88,16 +88,66 @@ const Navigation = () => {
                 {isMenuOpen && (
                     <div className="lg:hidden">
                         <motion.div
-                            className="w-full bg-gray-50"
+                            className="w-full bg-white shadow-lg"
                             initial={{opacity: 0, y: -20, height: 0}}
                             animate={{opacity: 1, y: 0, height: "auto"}}
                             exit={{opacity: 0, y: -20, height: 0}}
                             transition={{duration: 0.3}}
                         >
                             <div className="flex flex-col">
-                                {menus.map((menu, index) => (
-                                    <div key={index} className="py-3 px-5 content-center">{menu}</div>
-                                ))}
+                                {/* User Profile Section */}
+                                <div className="px-6 py-5 border-b border-gray-100">
+                                    {userData ? (
+                                        <div className="flex items-center space-x-4">
+                                            <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                                                <AccountCircleIcon className="text-blue-600" fontSize="large"/>
+                                            </div>
+                                            <div className="flex-1">
+                                                <div className="font-semibold text-gray-900">{userData.name}</div>
+                                                <div className="text-sm text-gray-500">{userData.email}</div>
+                                            </div>
+                                            <button
+                                                onClick={() => {
+                                                    logout();
+                                                    setIsMenuOpen(false);
+                                                }}
+                                                className="px-3 py-1 text-sm text-red-600 hover:bg-red-50 rounded-md transition-colors cursor-pointer"
+                                            >
+                                                로그아웃
+                                            </button>
+                                        </div>
+                                    ) : (
+                                        <div className="flex items-center space-x-4">
+                                            <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center">
+                                                <AccountCircleIcon className="text-gray-400" fontSize="large"/>
+                                            </div>
+                                            <div className="flex-1">
+                                                <div className="text-gray-600">로그인이 필요합니다</div>
+                                            </div>
+                                            <button
+                                                onClick={() => {
+                                                    navigate("/login");
+                                                    setIsMenuOpen(false);
+                                                }}
+                                                className="px-3 py-1 text-sm text-blue-600 hover:bg-red-50 rounded-md transition-colors cursor-pointer"
+                                            >
+                                                로그인
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
+                                
+                                {/* Menu Items */}
+                                <div className="py-2">
+                                    {menus.map((menu, index) => (
+                                        <div 
+                                            key={index} 
+                                            className="px-6 py-3 text-gray-700 hover:bg-gray-50 hover:text-blue-600 cursor-pointer transition-colors border-l-4 border-transparent hover:border-blue-600"
+                                        >
+                                            {menu}
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
                         </motion.div>
                         <div onClick={() => setIsMenuOpen(false)} className="h-screen w-full" role="button"

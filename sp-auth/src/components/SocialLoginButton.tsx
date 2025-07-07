@@ -87,12 +87,6 @@ const SocialLoginButton: React.FC<SocialLoginButtonProps> = ({provider}) => {
                 console.log('Fetched userData:', userData);
                 setUserData(userData);
                 console.log('setUserData called with:', userData);
-                
-                // 다른 마이크로프론트엔드로 데이터 전송
-                window.postMessage({
-                    type: 'USER_LOGIN',
-                    payload: { userData, token: accessToken }
-                }, '*');
             } catch (error) {
                 console.error('사용자 정보 가져오기 실패:', error);
             }
