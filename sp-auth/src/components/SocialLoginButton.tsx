@@ -87,6 +87,7 @@ const SocialLoginButton: React.FC<SocialLoginButtonProps> = ({provider}) => {
                 console.log('Fetched userData:', userData);
                 setUserData(userData);
                 console.log('setUserData called with:', userData);
+                alert(`환영합니다. ${userData.name}님!`);
             } catch (error) {
                 console.error('사용자 정보 가져오기 실패:', error);
             }
