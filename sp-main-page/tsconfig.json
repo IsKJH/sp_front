@@ -3,7 +3,6 @@
   "compilerOptions": {
     "moduleResolution": "bundler",
     "useDefineForClassFields": true,
-    "allowImportingTsExtensions": true,
     "rootDir": "./src",
     "paths": {
       "*": ["./@mf-types/*"]
